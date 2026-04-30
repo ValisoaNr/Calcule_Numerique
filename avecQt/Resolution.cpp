@@ -5,7 +5,6 @@
 #include "Resolution.h"
 #include "ui_Resolution.h"
 #include <QMessageBox>
-#define E 0.0001
 
 Resolution::Resolution(QWidget *parent)
     : QMainWindow(parent)
@@ -16,6 +15,7 @@ Resolution::Resolution(QWidget *parent)
     connect(ui->dichotomie , SIGNAL(clicked()) , this , SLOT(dichotomie()));
     connect(ui->rectangle , SIGNAL(clicked()) , this , SLOT(Mrectangle()));
     connect(ui->trapeze , SIGNAL(clicked()) , this , SLOT(Mtrapeze()));
+    connect(ui->tracerGP , SIGNAL(clicked()) , this , SLOT(trace()));
 }
 
 Resolution::~Resolution()
@@ -24,10 +24,12 @@ Resolution::~Resolution()
 }
 double Resolution::fprime(double x)
 {
-    double ret , h;
+    double ret , h , epsilon;
 
     h = 1;
-    while(h > E)
+    ret = (f(x + h) - f(x)) / h;
+    epsilon = ui->epsilon->value();
+    while(h > epsilon)
     {
         ret = (f(x + h) - f(x)) / h;
         h = h / 2;
@@ -39,10 +41,18 @@ int Resolution::Ecritsolution(string fichier)
 {
     // Pour pouvoir faire l'affichage avec gnuplot ; il faut le fichier.gnu
     ofstream fi;
-    string fonction , a , b;
+    string fonction  , ordonnee;
+    double a , b , tmp;
+    int i;
 
-    a = ui->a->text().toStdString();
-    b = ui->b->text().toStdString();
+    a = ui->a->value();
+    b = ui->b->value();
+    if(a > b)
+    {
+        tmp = a;
+        a = b;
+        b = tmp;
+    }
     fonction = ui->fonction->text().toStdString();
     fi.open(fichier.c_str());
     if(fi)
@@ -53,11 +63,25 @@ int Resolution::Ecritsolution(string fichier)
 
         fi << "set ylabel \"abscisses\"" << endl;
         fi << "set xlabel \"ordonnees\"" << endl;
-        fi << "set xrange [" << a << ":" << b << "]" << endl;
+        // ordonnee vers string
+        ordonnee = to_string(a) + ":" + to_string(b);
+        for(i=0 ; i<ordonnee.length() ; i++)
+        {
+            if(ordonnee[i] == ',')
+            {
+                // pour que gnuplot sait double ; il faut utiliser . comme virgule
+                ordonnee[i] = '.';
+            }
+        }
+        fi << "set xrange [" << ordonnee << "]" << endl;
         fi << "set yrange [-1:1]" << endl;
 
         fi << "plot " << fonction << " title \""  << fonction << "\" with lines" << endl;
-        fi << "replot \"solution.txt\" using 1:2 title \"approxm\" with points pt 1 ps 1.2" << endl;
+        // s'il a calculé une approximation alors on ajoute les points dans solution.txt
+        if(ui->approxim->text().length() != 0)
+        {
+            fi << "replot \"solution.txt\" using 1:2 title \"approxm\" with points pt 1 ps 1.2" << endl;
+        }
         fi.close();
     }
     else
@@ -71,7 +95,7 @@ int Resolution::Ecritsolution(string fichier)
 
 void Resolution::Mrectangle()
 {
-    double resultat , tmp , n , a , b;
+    double resultat , tmp , n , a , b , epsilon;
     QString valeur;
 
     a = ui->a->value();
@@ -86,7 +110,8 @@ void Resolution::Mrectangle()
 
     resultat = 0;
     tmp = a;
-    while(fabs(b - tmp) > E)
+    epsilon = ui->epsilon->value();
+    while(fabs(b - tmp) > epsilon)
     {
         resultat = resultat + fabs((1/n) * f(tmp));
         tmp = tmp + (1 / n);
@@ -191,19 +216,20 @@ double Resolution::f(double x)
 }
 void Resolution::newton()
 {
-    double ret , xn , xn1 , a;
+    double ret , xn , xn1 , a , epsilon;
     int iteration;
     string coordonnees;
     QString resultat , nbiteration;
     Fichier solution;
 
     a = ui->a->value();
-    cout << "newton : ";
     iteration = 0;
     xn = a;
     solution.setNom("solution.txt");
     solution.vider();
-    while(fabs(distance(xn,0,xn,f(xn))) > E)
+
+    epsilon = ui->epsilon->value();
+    while(fabs(distance(xn , 0 , xn , f(xn))) > epsilon)
     {
         coordonnees = to_string(xn) + " 0";
         solution.ajoutefin(coordonnees);

@@ -32,7 +32,15 @@ void Fichier::vider()
 void Fichier::ajoutefin(string chaine)
 {
     ofstream fic;
-
+    int i;
+    for(i=0 ; i<chaine.length() ; i++)
+    {
+        if(chaine[i] == ',')
+        {
+            // pour que gnuplot sait double ; il faut utiliser . comme virgule
+            chaine[i] = '.';
+        }
+    }
     fic.open(nom.c_str()  , ios::app);
     if(fic)
     {
