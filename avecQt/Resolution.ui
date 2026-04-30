@@ -35,8 +35,11 @@
        </item>
        <item>
         <widget class="QLineEdit" name="fonction">
+         <property name="toolTip">
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Entrez ici la fonction&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+         </property>
          <property name="text">
-          <string>log(x)-1</string>
+          <string/>
          </property>
         </widget>
        </item>
