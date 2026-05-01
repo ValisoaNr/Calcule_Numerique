@@ -164,7 +164,7 @@ void Resolution::dichotomie()
     a = ui->a->value();
     b = ui->b->value();
     ret = f(a) * f(b);
-    if(ret > 0)
+    if(ret >= 0)
     {
         QMessageBox::warning(this , "Erreur", "intervale invalide !");
         return;
@@ -192,17 +192,17 @@ void Resolution::dichotomie()
             coordonnees = to_string(s_n) + " 0";
             solution.ajoutefin(coordonnees);
         }
-	else
-	{
-		s_n = i;
-		break;
-	}
+        else
+        {
+            s_n = i;
+            break;
+        }
         iteration++;
     }
     nbiteration = QString::fromStdString(to_string(iteration));
     ui->nbIteration->setText(nbiteration);
 
-    approxim = QString::fromStdString(to_string(s_n));
+    approxim = QString::fromStdString(to_string(ret));
     ui->approxim->setText(approxim);
 }
 double Resolution::f(double x)
