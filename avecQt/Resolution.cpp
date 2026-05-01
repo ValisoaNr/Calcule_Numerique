@@ -192,6 +192,11 @@ void Resolution::dichotomie()
             coordonnees = to_string(s_n) + " 0";
             solution.ajoutefin(coordonnees);
         }
+	else
+	{
+		s_n = i;
+		break;
+	}
         iteration++;
     }
     nbiteration = QString::fromStdString(to_string(iteration));
