@@ -53,7 +53,11 @@
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="b"/>
+          <widget class="QDoubleSpinBox" name="b">
+           <property name="minimum">
+            <double>-99.989999999999995</double>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QLabel" name="label_9">

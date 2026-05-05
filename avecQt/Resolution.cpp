@@ -199,9 +199,10 @@ void Resolution::dichotomie()
             }
             iteration++;
         }
+        // pour avoir un peu plus de precision
+        i = ((s_n + s_n1) / 2);
         nbiteration = QString::fromStdString(to_string(iteration));
         ui->nbIteration->setText(nbiteration);
-        i = ((s_n + s_n1) / 2);
         approxim = QString::fromStdString(to_string(i));
         ui->approxim->setText(approxim);
     }
