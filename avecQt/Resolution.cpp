@@ -167,43 +167,44 @@ void Resolution::dichotomie()
     if(ret >= 0)
     {
         QMessageBox::warning(this , "Erreur", "intervale invalide !");
-        return;
     }
-
-    iteration = 0;
-    s_n = a;
-    s_n1 = b;
-    solution.setNom("solution.txt");
-    coordonnees = to_string(s_n) + " 0\n" + to_string(s_n1) + " 0";
-    solution.ajoutefin(coordonnees);
-    epsilon = ui->epsilon->value();
-    while( fabs(s_n1 - s_n) > epsilon )
+    else
     {
+        iteration = 0;
+        s_n = a;
+        s_n1 = b;
+        solution.setNom("solution.txt");
+        coordonnees = to_string(s_n) + " 0\n" + to_string(s_n1) + " 0";
+        solution.ajoutefin(coordonnees);
+        epsilon = ui->epsilon->value();
+        while( fabs(s_n1 - s_n) > epsilon )
+        {
+            i = ((s_n + s_n1) / 2);
+            if((f(s_n) * f(i)) < 0)
+            {
+                s_n1 = i;
+                coordonnees = to_string(s_n1) + " 0";
+                solution.ajoutefin(coordonnees);
+            }
+            else if((f(i) * f(s_n1)) < 0)
+            {
+                s_n = i;
+                coordonnees = to_string(s_n) + " 0";
+                solution.ajoutefin(coordonnees);
+            }
+            else
+            {
+                s_n = i;
+                break;
+            }
+            iteration++;
+        }
+        nbiteration = QString::fromStdString(to_string(iteration));
+        ui->nbIteration->setText(nbiteration);
         i = ((s_n + s_n1) / 2);
-        if((f(s_n) * f(i)) < 0)
-        {
-            s_n1 = i;
-            coordonnees = to_string(s_n1) + " 0";
-            solution.ajoutefin(coordonnees);
-        }
-        else if((f(i) * f(s_n1)) < 0)
-        {
-            s_n = i;
-            coordonnees = to_string(s_n) + " 0";
-            solution.ajoutefin(coordonnees);
-        }
-        else
-        {
-            s_n = i;
-            break;
-        }
-        iteration++;
+        approxim = QString::fromStdString(to_string(i));
+        ui->approxim->setText(approxim);
     }
-    nbiteration = QString::fromStdString(to_string(iteration));
-    ui->nbIteration->setText(nbiteration);
-
-    approxim = QString::fromStdString(to_string(ret));
-    ui->approxim->setText(approxim);
 }
 double Resolution::f(double x)
 {

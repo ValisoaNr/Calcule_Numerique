@@ -7,8 +7,6 @@ int main()
     a.demandeA();
     a.demandeB();
     a.demandeFonction();
-    a.newton();
-    a.trace();
     a.dichotomie();
     a.trace();
 

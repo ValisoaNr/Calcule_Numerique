@@ -7,6 +7,7 @@
 #include <cmath>
 #include <algorithm>
 #define E 0.00001
+#define MAX_ITER 1000
 
 double Resolution::fprime(double x)
 {
@@ -105,35 +106,42 @@ void Resolution::demandeFonction()
 }
 double Resolution::dichotomie()
 {
-    double ret , i , s_n , s_n1 ;
+    double i ,  s_n , s_n1 , racine;
     string coordonnees;
     int iteration;
     Fichier solution;
 
     cout << "dichotomie : ";
-    ret = f(a) * f(b);
-    if(ret > 0)
+    if(f(a) * f(b) > 0)
     {
-        cout << "intervale invalide !" << endl;
+        cout << "intervalle invalide !" << endl;
         exit(0);
     }
-    
-    iteration = 0;
+
     s_n = a;
     s_n1 = b;
     solution.setNom("solution.txt");
     coordonnees = to_string(s_n) + " 0\n" + to_string(s_n1) + " 0";
     solution.ajoutefin(coordonnees);
-    while( fabs(s_n1 - s_n) > E )
+
+    iteration = 0;
+    while((fabs(s_n1 - s_n) > E) && (iteration < MAX_ITER))
     {
-        i = ((s_n + s_n1) / 2);
-        if((f(s_n) * f(i)) < 0)
+        i = (s_n + s_n1) / 2;
+
+        if(fabs(f(i)) < 1e-15)
+        {
+            s_n = s_n1 = i;
+            break;
+        }
+
+        if(f(s_n) * f(i) < 0)
         {
             s_n1 = i;
             coordonnees = to_string(s_n1) + " 0";
             solution.ajoutefin(coordonnees);
         }
-        else if((f(i) * f(s_n1)) < 0)
+        else
         {
             s_n = i;
             coordonnees = to_string(s_n) + " 0";
@@ -141,11 +149,12 @@ double Resolution::dichotomie()
         }
         iteration++;
     }
-    
-    cout << s_n << " ; " ;
+
+    racine = (s_n + s_n1) / 2;
+    cout << racine << " ; ";
     cout << "nb iteration : " << iteration << endl;
-    
-    return (ret);
+
+    return racine;
 }
 double Resolution::f(double x)
 {
