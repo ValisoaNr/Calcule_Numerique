@@ -5,6 +5,7 @@
 #include "Resolution.h"
 #include "ui_Resolution.h"
 #include <QMessageBox>
+#include <QPixmap>
 
 Resolution::Resolution(QWidget *parent)
     : QMainWindow(parent)
@@ -60,6 +61,8 @@ int Resolution::Ecritsolution(string fichier)
         fi << "set xzeroaxis" << endl;
         fi << "set yzeroaxis" << endl;
         fi << "set pointsize 0.2" << endl;
+        fi << "set terminal png" << endl;
+        fi << "set output \"trace.png\"" << endl;
 
         fi << "set ylabel \"abscisses\"" << endl;
         fi << "set xlabel \"ordonnees\"" << endl;
@@ -80,6 +83,7 @@ int Resolution::Ecritsolution(string fichier)
         // s'il a calculé une approximation alors on ajoute les points dans solution.txt
         if(ui->approxim->text().length() != 0)
         {
+            fi << "set output \"trace.png\"" << endl;
             fi << "replot \"solution.txt\" using 1:2 title \"approxm\" with points pt 1 ps 1.2" << endl;
         }
         fi.close();
@@ -150,8 +154,17 @@ void Resolution::Mtrapeze()
 }
 void Resolution::trace()
 {
+    QPixmap image;
+
     Ecritsolution("test.gnu");
     system("gnuplot \"test.gnu\" -persist");
+
+    if(ui->approxim->text().length() != 0)
+    {
+        image.load("trace.png");
+        image = image.scaled(ui->imageLabel->width() , ui->imageLabel->height() , Qt::KeepAspectRatio);
+        ui->imageLabel->setPixmap(image);
+    }
 }
 void Resolution::dichotomie()
 {
