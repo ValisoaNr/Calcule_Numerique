@@ -153,11 +153,9 @@ public class Resolution
     }
     public static void main(String[] argument)
     {
-        Resolution a = new Resolution();
-        
-        System.out.println(a.dichotomie(1 , 3));
-        System.out.println(a.newton(1));
-        System.out.println(a.trapeze(3 , 4.1 , 100));
-        System.out.println(a.rectangle(3 , 4.1 , 100));
+        System.out.println(dichotomie(1 , 3));
+        System.out.println(newton(1));
+        System.out.println(trapeze(3 , 4.1 , 100));
+        System.out.println(rectangle(3 , 4.1 , 100));
     }
 };
